@@ -1,16 +1,15 @@
-mda <- function(x, level=0.99) {
+mda <- function(y, x) {
   # Multiples Discriminants Analysis for n classes.
-  # Assumes classes are defined in the first column of x and
+  # Classes must be defined in y and
   # named as consecutive positive integers (base+1, base+2, ..., base+nclass).
-  group <- x[, 1]
-  base <- min(group) - 1
-  nclass <- length(unique(group))
+  base <- min(y) - 1
+  nclass <- length(unique(y))
   sets <- list()
-  for (c in 1:nclass) sets[[c]] <- x[group == c + base, -1]
+  for (c in 1:nclass) sets[[c]] <- x[y == c + base, -1]
   ms <- list()
   for (c in 1:nclass) ms[[c]] <- colMeans(sets[[c]])
-  m <- colMeans(x[, -1])
-  nfeat <- ncol(x[, -1])
+  m <- colMeans(x)
+  nfeat <- ncol(x)
   Sinter <- matrix(0, ncol=nfeat, nrow=nfeat)
   for (c in 1:nclass) Sinter <- Sinter + (ms[[c]] - m) %*% t(ms[[c]] - m)
   Sintra <- matrix(0, ncol=nfeat, nrow=nfeat)
@@ -21,8 +20,7 @@ mda <- function(x, level=0.99) {
   }
   W <- solve(Sintra) %*% Sinter
   decomp <- eigen(W)
-  nvec <- sum(cumsum(Re(decomp$values)) / sum(Re(decomp$values)) < level)
-  if (nvec < 1) nvec <- 1
-  Wtr <- Re(decomp$vectors[, 1:nvec])
-  return(cbind(x[, 1], x[, -1] %*% Wtr))
+  values <- Re(decomp$values)
+  vectors <- Re(decomp$vectors)
+  return(list("values"=values, "vectors"=vectors, "x"=x %*% vectors))
 }
