@@ -1,11 +1,11 @@
 mda <- function(y, x) {
   # Multiples Discriminants Analysis for n classes.
-  # Classes must be defined in y and
-  # named as consecutive positive integers (base+1, base+2, ..., base+nclass).
+  # x is the feature matrix, y defines the classes that must be named
+  # as consecutive positive integers (base+1, base+2, ..., base+nclass).
   base <- min(y) - 1
   nclass <- length(unique(y))
   sets <- list()
-  for (c in 1:nclass) sets[[c]] <- x[y == c + base, -1]
+  for (c in 1:nclass) sets[[c]] <- x[y == c + base, ]
   ms <- list()
   for (c in 1:nclass) ms[[c]] <- colMeans(sets[[c]])
   m <- colMeans(x)
