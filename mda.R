@@ -1,7 +1,8 @@
 mda <- function(y, x) {
-  # Multiples Discriminants Analysis for n classes.
+  # Multiple Discriminants Analysis for n classes.
   # x is the feature matrix, y defines the classes that must be named
   # as consecutive positive integers (base+1, base+2, ..., base+nclass).
+  if (any(y < 1)) stop('Classes must be named as consecutive positive integers.')
   base <- min(y) - 1
   nclass <- length(unique(y))
   sets <- list()
